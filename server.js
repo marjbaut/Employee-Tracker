@@ -2,10 +2,12 @@
 const inquirer = require('inquirer');
 // creating a connection
 const mysql = require('mysql2');
+require('dotenv').config();
+
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345678',
+    password: process.env.PW,
     database: 'employee_db',
     port: 3306
 })
@@ -82,10 +84,13 @@ function viewRoles() {
 }
 function viewEmployees() {
 
-    db.query(`SELECT employee.id, employee.first_name, employee.last_name , role.title ,
-     department.name AS department, role.salary, employee.first_name AS manager FROM employee
-      JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id
-      JOIN employee man ON employee.manager_id = man.id`
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name  , role.title ,
+    department.name 
+   AS department , role.salary, man.first_name AS manager
+   FROM  employee 
+   LEFT JOIN role ON employee.role_id = role.id
+   LEFT JOIN department ON role.department_id = department.id
+   LEFT JOIN employee man  ON employee.manager_id = man.id`
         , (err, result) => {
             if (err) {
                 console.log(err);
